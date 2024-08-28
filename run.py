@@ -15,7 +15,7 @@ n_time_steps = 25
 mpPose = mp.solutions.pose
 pose = mpPose.Pose()
 mpDraw = mp.solutions.drawing_utils
-
+start_time = None
 def custom_lstm(*args, **kwargs):
     kwargs.pop('time_major', None)
     return LSTM(*args, **kwargs)
@@ -128,7 +128,7 @@ def Phat_am_thanh_canh_bao(label):
                 while pygame.mixer.get_busy():
                     time.sleep(0.1)
         
-        # Tạo và khởi chạy luồng âm thanh
+ 
         sound_thread = threading.Thread(target=play_sound)
         sound_thread.start()
  
@@ -181,10 +181,12 @@ def main():
                 alert = (label == "FALL")  # Trigger alert if fall is detected
                 Phat_am_thanh_canh_bao(label)
         else:
-            start_time = time.time()
+            if start_time == None:
+                start_time = time.time()
             elapsed_time = time.time() - start_time
-            if elapsed_time == 1.5:
+            if elapsed_time > 1.5:
                 lm_list = []
+                label = "NONE DETECTION"
         stframe.image(img, channels="BGR")
         
         if alert:
